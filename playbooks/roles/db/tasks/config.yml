@@ -1,0 +1,63 @@
+- name: mysql run
+  service:
+    name: mysql
+    state: started
+    enabled: True
+
+- name: Copy my.cnf global MySQL configuration.
+  template:
+    src: my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy my.cnf global MySQL configuration.
+  template:
+    src: mysqlconf
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Ensure root users are present.
+  mysql_user:
+    name: root
+    host: localhost
+    password: root
+
+- name: copy sql template
+  template:
+    src: dump.sql
+    dest: /tmp/dump.sql
+
+- name: insert sql
+  mysql_db: name=example state=import target=/tmp/dump.sql login_user=root login_password=root
+
+- name: Ensure non root users are present.
+  mysql_user:
+    login_user: "root"
+    login_password: "root"
+    name: "Admin1"
+    host: "192.168.klantid.11"
+    password: "Pass1"
+    priv: "*.*:ALL,GRANT"
+    state: "present"
+  no_log: false
+
+
+- name: Ensure non root users are present.
+  mysql_user:
+    login_user: "root"
+    login_password: "root"
+    name: "Admin1"
+    host: "192.168.klantid.12"
+    password: "Pass1"
+    priv: "*.*:ALL,GRANT"
+    state: "present"
+  no_log: false
+
+- name: mysql restart
+  service:
+    name: mysql
+    state: restarted

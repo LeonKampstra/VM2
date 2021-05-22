@@ -1,0 +1,48 @@
+
+
+
+
+Vagrant.configure("2") do |config|
+
+  config.ssh.insert_key = false
+  config.ssh.private_key_path = ["~/.ssh/id_rsa", "~/.vagrant.d/insecure_private_key"]
+
+
+  config.vm.define "klantnaam-productie-01-lb" do |lb1_config|
+      lb1_config.vm.box = "ubuntu/xenial64"
+      lb1_config.vm.hostname = "klantnaam-productie-01-lb"
+      lb1_config.vm.network "private_network", ip: "192.168.klantid.10" 
+      lb1_config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+      lb1_config.vm.provider "virtualbox" do |vb|
+        vb.name = "klantnaam-productie-01-loadbalancer"
+        vb.gui = false
+        vb.memory = "ram"   
+      end
+  end
+
+  (1..aantalWeb).each do |i|
+  config.vm.define "klantnaam-productie-01-webserver#{i}" do |web_config|
+      web_config.vm.box = "ubuntu/xenial64"
+      web_config.vm.hostname = "klantnaam-productie-01-webserver#{i}"
+      web_config.vm.network "private_network", ip: "192.168.klantid.1#{i}" 
+      web_config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+      web_config.vm.provider "virtualbox" do |vb|
+        vb.name = "klantnaam-productie-01-webserver#{i}"
+        vb.gui = false
+        vb.memory = "ram"   
+      end
+  end
+end
+
+  config.vm.define "klantnaam-productie-01-db" do |db_config|
+      db_config.vm.box = "ubuntu/xenial64"
+      db_config.vm.hostname = "klantnaam-productie-01-db"
+      db_config.vm.network "private_network", ip: "192.168.klantid.20" 
+      db_config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+      db_config.vm.provider "virtualbox" do |vb|
+        vb.name = "klantnaam-productie-01-database"
+        vb.gui = false
+        vb.memory = "ram"   
+      end
+  end
+end

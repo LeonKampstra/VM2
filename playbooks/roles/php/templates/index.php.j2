@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>TESTSiTE</h1>
+ <?php
+	$db = new mysqli("192.168.klantid.20", "Admin1", "Pass1", "example", 3306);
+  if ($db -> connect_errno) {
+  echo "Failed to connect to MySQL: " . $db -> connect_error;
+  exit();
+}
+
+  $sql = "SELECT * FROM user_details;";
+  ?>
+  
+<table border="0" cellspacing="2" cellpadding="2">
+  <tr>
+      <td> <font face="Arial">Value1</font> </td>
+      <td> <font face="Arial">Value2</font> </td>
+      <td> <font face="Arial">Value3</font> </td>
+      <td> <font face="Arial">Value4</font> </td>
+      <td> <font face="Arial">Value5</font> </td>
+      <td> <font face="Arial">Value6</font> </td>
+      <td> <font face="Arial">Value7</font> </td>
+
+
+<?php
+if ($result = $db->query($sql)) {
+  while ($row = $result->fetch_assoc()) {
+  $field1name = $row["id"];
+  $field2name = $row["username"];
+  $field3name = $row["first_name"];
+  $field4name = $row["last_name"];
+  $field5name = $row["gender"];
+  $field6name = $row["password"];
+  $field7name = $row["status"];
+
+  echo '<tr>
+    <td>'.$field1name.'</td>
+    <td>'.$field2name.'</td>
+    <td>'.$field3name.'</td>
+    <td>'.$field4name.'</td>
+    <td>'.$field5name.'</td>
+    <td>'.$field6name.'</td>
+    <td>'.$field7name.'</td>
+  </tr>';
+}$result->free();
+}
+?>
+
+  </body>
+
+</html>

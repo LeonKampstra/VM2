@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: True
+  tasks:
+    - name: install apache2
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+
+    # - name: Copy index.html
+    #   template:
+    #     src:
+    #     dest:      
