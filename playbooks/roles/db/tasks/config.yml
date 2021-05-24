@@ -5,20 +5,22 @@
     enabled: True
 
 - name: Copy my.cnf global MySQL configuration.
-  template:
+  copy:
     src: my.cnf.j2
     dest: /root/.my.cnf
     owner: root
     group: root
     mode: 0644
+  notify: restart mysql
 
 - name: Copy my.cnf global MySQL configuration.
-  template:
+  copy:
     src: mysqlconf
     dest: /etc/mysql/mysql.conf.d/mysqld.cnf
     owner: root
     group: root
     mode: 0644
+  notify: restart mysql
 
 - name: Ensure root users are present.
   mysql_user:
@@ -44,6 +46,7 @@
     priv: "*.*:ALL,GRANT"
     state: "present"
   no_log: false
+  notify: restart mysql
 
 
 - name: Ensure non root users are present.
@@ -56,8 +59,5 @@
     priv: "*.*:ALL,GRANT"
     state: "present"
   no_log: false
+  notify: restart mysql
 
-- name: mysql restart
-  service:
-    name: mysql
-    state: restarted
