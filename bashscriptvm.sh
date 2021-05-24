@@ -101,8 +101,17 @@ vagrant reload
 
 aantalWebProdcutie(){
 read -p "Hoeveel Webservers wenst u te hebben? " _aantalWebAP
-sed -i "s+aantalWeb+$_aantalWebAP+g" Vagrantfile
-vagrant reload
+sed -i "s+1..1+1..$_aantalWebAP+g" Vagrantfile
+sed -i "s+1..2+1..$_aantalWebAP+g" Vagrantfile
+sed -i "s+1..3+1..$_aantalWebAP+g" Vagrantfile
+COUNTER=$(</home/student/VM2/benodigdheden/counter)
+vagrant up
+cprolesP
+sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/roles/php/files/index.php.j2
+sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/roles/lb/defaults/main.yml
+sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/roles/db/tasks/config.yml
+ansible-playbook hosts.yml --tags "web"
+verwijderRoles
 }
 
 ramTest(){
@@ -114,11 +123,20 @@ sed -i "s+2048+$_ramAT+g" Vagrantfile
 vagrant reload
 }
 
-aantalWebProdcutie(){
+aantalTestProdcutie(){
 cd "testomgeving"
 read -p "Hoeveel Webservers wenst u te hebben? " _aantalWebAT
-sed -i "s+aantalWeb+$_aantalWebAT+g" Vagrantfile
-vagrant reload
+sed -i "s+1..1+1..$_aantalWebAT+g" Vagrantfile
+sed -i "s+1..2+1..$_aantalWebAT+g" Vagrantfile
+sed -i "s+1..3+1..$_aantalWebAT+g" Vagrantfile
+vagrant up
+COUNTER=$(</home/student/VM2/benodigdheden/counter)
+cprolesT
+sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/roles/php/files/index.php.j2
+sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/roles/lb/defaults/main.yml
+sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/roles/db/tasks/config.yml
+ansible-playbook hosts.yml --tags "web"
+verwijderRoles
 }
 
 
@@ -185,7 +203,7 @@ while true; do
 	elif [ "$_optieAanpassen" = 3 ]; then
 		ramTest
 	elif [ "$_optieAanpassen" = 4 ]; then
-		aantalWebTest
+		aantalTestProdcutie
 	elif [ "$_optieAanpassen" = 5 ]; then
 		extraProductie
 	elif [ "$_optieAanpassen" = 6 ]; then
@@ -254,9 +272,7 @@ printf "Welkom"
 printf "\n"
 
 read -p "Wat is uw klantnaam? " _klantnaam
-read -p "wachtwoord: " 
 echo "Welkom: $_klantnaam"
-
 printf "Wat wilt u doen?\n"
 printf "1: omgeving aanvragen\n"
 printf "2: omgeving aanpassen of extra omgeving uitrollen\n"
