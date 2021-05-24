@@ -1,6 +1,7 @@
 ---
 - hosts: web
   become: yes
+  tags: web
 
   roles:
     - php

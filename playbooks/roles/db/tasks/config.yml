@@ -29,7 +29,7 @@
     password: root
 
 - name: copy sql template
-  template:
+  copy:
     src: dump.sql
     dest: /tmp/dump.sql
 
