@@ -30,13 +30,13 @@ rm hosts.yml
 }
 
 cprolesP(){
-		cp -r /home/student/VM2/playbooks/roles/ /home/student/VM2/Klanten/"$_klantnaam"/roles/
-		cp -r /home/student/VM2/playbooks/hosts.yml /home/student/VM2/Klanten/"$_klantnaam"/hosts.yml
+	cp -r /home/student/VM2/playbooks/roles/ /home/student/VM2/Klanten/"$_klantnaam"/roles/
+	cp -r /home/student/VM2/playbooks/hosts.yml /home/student/VM2/Klanten/"$_klantnaam"/hosts.yml
 }
 
 cprolesT(){
-			cp -r /home/student/VM2/playbooks/roles/ /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/roles/
-		cp -r /home/student/VM2/playbooks/hosts_T.yml /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/hosts.yml
+	cp -r /home/student/VM2/playbooks/roles/ /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/roles/
+	cp -r /home/student/VM2/playbooks/hosts_T.yml /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/hosts.yml
 	}
 #omgeving uitrollen
 omgevingAanmaken(){
@@ -59,7 +59,7 @@ while true; do
 		cp /home/student/VM2/benodigdheden/inventory.ini /home/student/VM2/Klanten/"$_klantnaam"/inventory.ini 
 		cp /home/student/VM2/benodigdheden/ansible.cfg /home/student/VM2/Klanten/"$_klantnaam"/ansible.cfg
 		cprolesP
-		sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/roles/php/templates/index.php.j2
+		sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/roles/php/files/index.php.j2
 		sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/roles/lb/defaults/main.yml
 		sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/roles/db/tasks/config.yml	
 		files
@@ -73,7 +73,7 @@ while true; do
 		cp /home/student/VM2/benodigdheden/inventory_T.ini /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/inventory.ini 
 		cp /home/student/VM2/benodigdheden/ansible.cfg /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/ansible.cfg
 		cprolesT
-		sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/roles/php/templates/index.php.j2
+		sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/roles/php/files/index.php.j2
 		sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/roles/lb/defaults/main.yml
 		sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/testomgeving/roles/db/tasks/config.yml
 		cd "testomgeving"
@@ -133,7 +133,7 @@ cp /home/student/VM2/benodigdheden/inventory.ini /home/student/VM2/Klanten/"$_kl
 cp /home/student/VM2/benodigdheden/ansible.cfg /home/student/VM2/Klanten/"$_klantnaam"/productie2/ansible.cfg
 cp -r /home/student/VM2/playbooks/roles/ /home/student/VM2/Klanten/"$_klantnaam"/productie2/roles/
 cp -r /home/student/VM2/playbooks/hosts.yml /home/student/VM2/Klanten/"$_klantnaam"/productie2/hosts.yml
-sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/productie2/roles/php/templates/index.php.j2
+sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/productie2/roles/php/files/index.php.j2
 sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/productie2/roles/lb/defaults/main.yml
 sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/productie2/roles/db/tasks/config.yml	
 cd "productieomgeving2"	
@@ -154,7 +154,7 @@ cp /home/student/VM2/benodigdheden/inventory_T.ini /home/student/VM2/Klanten/"$_
 cp /home/student/VM2/benodigdheden/ansible.cfg /home/student/VM2/Klanten/"$_klantnaam"/testomgeving2/ansible.cfg
 cp -r /home/student/VM2/playbooks/roles/ /home/student/VM2/Klanten/"$_klantnaam"/testomgeving2/roles/
 cp -r /home/student/VM2/playbooks/hosts_T.yml /home/student/VM2/Klanten/"$_klantnaam"/testomgeving2/hosts.yml
-sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/testomgeving2/roles/php/templates/index.php.j2
+sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/testomgeving2/roles/php/files/index.php.j2
 sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/testomgeving2/roles/lb/defaults/main.yml
 sed -i "s+klantid+$COUNTER+g" /home/student/VM2/Klanten/"$_klantnaam"/testomgeving2/roles/db/tasks/config.yml
 echo "U krijgt een extra test omgeving"	
@@ -202,28 +202,48 @@ omgevingVerwijderen(){
 echo "omgevingVerwijderen"
 cd /home/student/VM2/Klanten/"$_klantnaam"
 
+verwijderenfiles(){
+	vagrant destroy -f
+	rm Vagrantfile
+	rm inventory.ini
+	rm ansible.cfg
+}
+verwijderenP1(){
 
+	verwijderenfiles
+}
+verwijderenP2(){
+	cd "productie2"
+	verwijderenfiles
+}
+verwijderenT1(){
+	cd "testomgeving"
+	verwijderenfiles
+}
+verwijderenT2(){
+	cd "testomgeving2"
+	verwijderenfiles
+}
+
+
+printf "Wat wilt u doen?\n"
+printf "1: productie omgeving verwijderen\n"
+printf "2: tweede productie omgeving verwijderen\n"
+printf "3: test omgeving verwijderen\n"
+printf "4: tweede test omgeving verwijderen\n"
+read -p "vul uw optie in: " _optieV
 while true; do
-	read -p "Wenst u een productie (p) of een test omgeving (t) te verwijderen? " _TypeOmgeving
-
-	if [ "$_TypeOmgeving" = "p" ];
+	if [ "$_optieV" = 1 ];
 	then
-		echo "U Wenst een productieomgeving te verwijderen"
-		vagrant destroy -f
-		rm Vagrantfile
-		rm inventory.ini
-		rm ansible.cfg
-
-	elif [ "$_TypeOmgeving" = "t" ];
-	then
-		echo "u wenst een test omgeving te verwijderen"
-		cd "testomgeving"
-		vagrant destroy -f
-		rm Vagrantfile
-		rm inventory.ini
-		rm ansible.cfg
+		verwijderenP1
+	elif [ "$_optieV" = 2 ]; then
+		verwijderenP2
+	elif [ "$_optieV" = 3 ]; then
+		verwijderenT1
+	elif [ "$_optieV" = 4 ]; then
+		verwijderenT2
 	else
-		echo "foutieve invoer, vul p of t in"
+		echo "verkeerde optie"
 		continue
 	fi
 	break
@@ -239,7 +259,7 @@ echo "Welkom: $_klantnaam"
 
 printf "Wat wilt u doen?\n"
 printf "1: omgeving aanvragen\n"
-printf "2: omgeving aanpassen\n"
+printf "2: omgeving aanpassen of extra omgeving uitrollen\n"
 printf "3: omgeving verwijderen\n"
 read -p "vul uw optie in: " _optie
 while true; do
